@@ -173,6 +173,12 @@ enum Preferences {
         set { set(newValue.rawValue, "switchKey") }
     }
 
+    /// Whether switching between the hand and the mouse shows a short hint.
+    static var switchHint: Bool {
+        get { defaults.object(forKey: "switchHint") as? Bool ?? true }
+        set { set(newValue, "switchHint") }
+    }
+
     static var inkChoice: InkChoice {
         get { defaults.string(forKey: "inkChoice").flatMap(InkChoice.init(rawValue:)) ?? .match }
         set { set(newValue.rawValue, "inkChoice") }
@@ -215,7 +221,7 @@ enum Preferences {
 
     static func resetAll() {
         for key in ["shortcut.toggle", "shortcut.clear", "pointerSize", "showShadow", "fadeSeconds",
-                    "sound.hands", "sound.laser", "interactKey", "interactKeepsHand", "switchKey", "pinnedStyles", "pointerStyle",
+                    "sound.hands", "sound.laser", "interactKey", "interactKeepsHand", "switchKey", "switchHint", "pinnedStyles", "pointerStyle",
                     "inkChoice", "showInkButton", "tapSound"] {
             defaults.removeObject(forKey: key)
         }

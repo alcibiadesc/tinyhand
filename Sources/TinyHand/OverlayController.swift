@@ -155,10 +155,12 @@ final class OverlayController {
             release()
         }
         let key = Preferences.switchKey.symbol
-        toolbar.showHint(on ? [("Mouse", "clicks reach the app"), ("Tap \(key)", "for the hand")]
-                            : [("Hand", "clicks are taps"), ("Tap \(key)", "for the mouse")])
-        DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
-            self?.toolbar.hideHint()
+        if Preferences.switchHint {
+            toolbar.showHint(on ? [("Mouse", "clicks reach the app"), ("Tap \(key)", "for the hand")]
+                                : [("Hand", "clicks are taps"), ("Tap \(key)", "for the mouse")])
+            DispatchQueue.main.asyncAfter(deadline: .now() + 1.5) { [weak self] in
+                self?.toolbar.hideHint()
+            }
         }
         wake()
         onActiveChanged?()

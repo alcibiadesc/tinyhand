@@ -462,6 +462,12 @@ private struct GeneralPage: View {
                     .fixedSize()
                     .focusable(false)
                 }
+                if Preferences.switchKey != .off {
+                    Row("Show a hint when switching", detail: "A short message says whether clicks are taps or reach the app.") {
+                        Toggle("", isOn: model.binding({ Preferences.switchHint }, { Preferences.switchHint = $0 }))
+                            .toggleStyle(.switch).labelsHidden().focusable(false)
+                    }
+                }
             }
             Card(title: "Startup") {
                 Row("Open TinyHand when you log in") {
