@@ -582,6 +582,7 @@ private struct PointersPage: View {
                     RoundedRectangle(cornerRadius: 14, style: .continuous)
                         .fill(Color.primary.opacity(0.045))
                 )
+                .opacity(Preferences.showToolbar ? 1 : 0.45)
                 .background(GeometryReader { g in
                     Color.clear
                         .onAppear { rowFrame = g.frame(in: .named("pointersPage")) }
@@ -601,6 +602,18 @@ private struct PointersPage: View {
                     .padding(.horizontal, 4)
                 if let message = model.pinMessage {
                     Text(message).font(.system(size: 12)).foregroundColor(.red).padding(.horizontal, 4)
+                }
+            }
+            Card(title: "Toolbar") {
+                Row("Show the toolbar", detail: Preferences.showToolbar
+                    ? "Pops up when the pointer turns on and near the bottom of the screen."
+                    : "Stays hidden. Press Esc to exit, or use the menu bar.") {
+                    Toggle("", isOn: model.binding({ Preferences.showToolbar }, { Preferences.showToolbar = $0 }))
+                        .toggleStyle(.switch).labelsHidden().focusable(false)
+                }
+                Row("Ink button", detail: "Change the colour while you present.") {
+                    Toggle("", isOn: model.binding({ Preferences.showInkButton }, { Preferences.showInkButton = $0 }))
+                        .toggleStyle(.switch).labelsHidden().focusable(false)
                 }
             }
             YourHands(model: model)
@@ -938,28 +951,20 @@ private struct AppearancePage: View {
     @ObservedObject var model: SettingsModel
 
     var body: some View {
-        VStack(alignment: .leading, spacing: 22) {
-            Card(title: "Pointer") {
-                Row("Size") {
-                    HStack(spacing: 10) {
-                        Image(systemName: "hand.point.up.left.fill").font(.system(size: 10)).foregroundColor(.secondary)
-                        Slider(value: model.binding({ Double(Preferences.pointerSize) }, { Preferences.pointerSize = CGFloat($0) }),
-                               in: Double(Preferences.pointerSizeRange.lowerBound)...Double(Preferences.pointerSizeRange.upperBound))
-                            .frame(width: 180)
-                            .focusable(false)
-                        Image(systemName: "hand.point.up.left.fill").font(.system(size: 16)).foregroundColor(.secondary)
-                    }
-                }
-                Row("Shadow under the pointer") {
-                    Toggle("", isOn: model.binding({ Preferences.showShadow }, { Preferences.showShadow = $0 }))
-                        .toggleStyle(.switch).labelsHidden().focusable(false)
+        Card(title: "Pointer") {
+            Row("Size") {
+                HStack(spacing: 10) {
+                    Image(systemName: "hand.point.up.left.fill").font(.system(size: 10)).foregroundColor(.secondary)
+                    Slider(value: model.binding({ Double(Preferences.pointerSize) }, { Preferences.pointerSize = CGFloat($0) }),
+                           in: Double(Preferences.pointerSizeRange.lowerBound)...Double(Preferences.pointerSizeRange.upperBound))
+                        .frame(width: 180)
+                        .focusable(false)
+                    Image(systemName: "hand.point.up.left.fill").font(.system(size: 16)).foregroundColor(.secondary)
                 }
             }
-            Card(title: "Toolbar") {
-                Row("Show the toolbar", detail: Preferences.showToolbar ? "Appears when the pointer turns on and when you move to the bottom of the screen." : "Hidden while you present. Turn it back on to switch pointers.") {
-                    Toggle("", isOn: model.binding({ Preferences.showToolbar }, { Preferences.showToolbar = $0 }))
-                        .toggleStyle(.switch).labelsHidden().focusable(false)
-                }
+            Row("Shadow under the pointer") {
+                Toggle("", isOn: model.binding({ Preferences.showShadow }, { Preferences.showShadow = $0 }))
+                    .toggleStyle(.switch).labelsHidden().focusable(false)
             }
         }
     }
@@ -996,10 +1001,6 @@ private struct DrawingPage: View {
                 .pickerStyle(.menu)
                 .fixedSize()
                 .focusable(false)
-            }
-            Row("Ink button in the toolbar", detail: "Change the colour while you present.") {
-                Toggle("", isOn: model.binding({ Preferences.showInkButton }, { Preferences.showInkButton = $0 }))
-                    .toggleStyle(.switch).labelsHidden().focusable(false)
             }
         }
     }
